@@ -24,6 +24,13 @@ namespace star_wars_api.Models {
         public int speciesId { get; set; }
 
         public string eyeColor { get; set; }
+        
+        public SpeciesEyeColor () {}
+
+        public SpeciesEyeColor (int _SpeciesId, string _eyeColor) {
+            speciesId = _SpeciesId;
+            eyeColor = _eyeColor;
+        }
     }
 
     public class SpeciesHairColor {
@@ -31,6 +38,13 @@ namespace star_wars_api.Models {
         public int speciesId { get; set; }
 
         public string hairColor { get; set; }
+        
+        public SpeciesHairColor () {}
+
+        public SpeciesHairColor (int _SpeciesId, string _hairColor) {
+            speciesId = _SpeciesId;
+            hairColor = _hairColor;
+        }
     }
 
     public class SpeciesSkinColor {
@@ -38,6 +52,13 @@ namespace star_wars_api.Models {
         public int speciesId { get; set; }
 
         public string skinColor { get; set; }
+        
+        public SpeciesSkinColor () {}
+
+        public SpeciesSkinColor (int _SpeciesId, string _skinColor) {
+            speciesId = _SpeciesId;
+            skinColor = _skinColor;
+        }
     }
 
     public class SpeciesCharacter {
@@ -46,5 +67,12 @@ namespace star_wars_api.Models {
 
         [Column(Order = 1), Key, ForeignKey("Character")]
         public int characterId { get; set; }
+        
+        public SpeciesCharacter () {}
+
+        public SpeciesCharacter (int _SpeciesId, int _CharacterId) {
+            speciesId = _SpeciesId;
+            characterId = _CharacterId;
+        }
     }
 }

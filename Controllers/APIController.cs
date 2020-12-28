@@ -9,29 +9,32 @@ using System.Collections.Generic;
 using System;
 
 namespace star_wars_api.Controllers {
-    public abstract class APIController<T> : Controller where T : class, IStarWarsModel {
+    public abstract class APIController<Model, JsonConverter> : Controller where Model : class, IStarWarsModel where JsonConverter: class, IStarWarsJSONConverter<Model>{
 
-        public star_wars_apiContext _context { get; set; }
-        public DbSet<T> _dbSet { get; set; }
+        public star_wars_apiContext context { get; set; }
+        public DbSet<Model> dbSet { get; set; }
 
-        public APIController() {}
-        
+        T GetJSON < T > (params object[] lstArgument)  
+        {  
+            return (T) Activator.CreateInstance(typeof (T), lstArgument);  
+        } 
+                
         [HttpPost]
         public string Create() {    
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
-                List<T> models = JsonSerializer.Deserialize<List<T>>(reader.ReadToEnd());
-                string names = "";
-                foreach (T model in models) {
-                    _dbSet.Add(model);
-                    names += model.id + ", ";
+                List<JsonConverter> JSONinputs = JsonSerializer.Deserialize<List<JsonConverter>>(reader.ReadToEnd());
+                List<JsonConverter> JSONoutputs = new List<JsonConverter>();
+                foreach (JsonConverter json in JSONinputs) {
+                    dbSet.Add(json.ToModel(context));
+                    JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(json.id)));
                 }                
-                _context.SaveChanges();
-                return names.Substring(0, names.Length - 2) + " created";
+                context.SaveChanges();
+                return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
             }       
         }
         
         public string Retrieve(int? id) {
-            T model = _dbSet.Find(id);
+            Model model = dbSet.Find(id);
             return model.id + " found";
         }
         
@@ -43,21 +46,21 @@ namespace star_wars_api.Controllers {
         [HttpPost]
         public string Update() {
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
-                List<T> models = JsonSerializer.Deserialize<List<T>>(reader.ReadToEnd());
+                List<Model> models = JsonSerializer.Deserialize<List<Model>>(reader.ReadToEnd());
                 string names = "";
-                foreach (T model in models) {
-                    _dbSet.Update(model);
+                foreach (Model model in models) {
+                    dbSet.Update(model);
                     names += model.id + ", ";
                 }                
-                _context.SaveChanges();
+                context.SaveChanges();
                 return names.Substring(0, names.Length - 2) + " updated";
             }   
         }
 
         public string Delete(int id) {
-            T model = _dbSet.Find(id);
-            _dbSet.Remove(model);
-            _context.SaveChanges();            
+            Model model = dbSet.Find(id);
+            dbSet.Remove(model);
+            context.SaveChanges();            
             return model.id + " removed";
         }
 

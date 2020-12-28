@@ -24,5 +24,12 @@ namespace star_wars_api.Models {
 
         [Column(Order = 1), Key, ForeignKey("Character")]
         public int characterId { get; set; }
+        
+        public PlanetCharacter () {}
+
+        public PlanetCharacter (int _PlanetId, int _CharacterId) {
+            planetId = _PlanetId;
+            characterId = _CharacterId;
+        }
     }
 }
