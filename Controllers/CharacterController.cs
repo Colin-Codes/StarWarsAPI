@@ -38,6 +38,10 @@ namespace star_wars_api.Controllers {
             this.birthYear = character.birthYear;
             this.gender = character.gender;
             this.homeworldId = character.homeworldId;
+            this.filmIds = new List<int>();
+            this.speciesIds = new List<int>();
+            this.vehicleIds = new List<int>();
+            this.starshipIds = new List<int>();
 
             if (character.filmIds != null) {
                 foreach (FilmCharacter film in character.filmIds) {
@@ -66,8 +70,13 @@ namespace star_wars_api.Controllers {
         }
 
         public Character ToModel(star_wars_apiContext context) {
-            Character character = new Character();
-
+            Character character = context.Character.Find(this.id);
+            
+            bool newObject = false;
+            if (character == null) {
+                newObject = true;
+                character = new Character();
+            }
             character.id = this.id;
             character.created = this.created;
             character.edited = this.edited;
@@ -78,8 +87,12 @@ namespace star_wars_api.Controllers {
             character.birthYear = this.birthYear;
             character.gender = this.gender;
             character.homeworldId = this.homeworldId;
+            character.filmIds = new List<FilmCharacter>();
+            character.speciesIds = new List<SpeciesCharacter>();
+            character.vehicleIds = new List<VehicleCharacter>();
+            character.starshipIds = new List<StarshipCharacter>();
 
-            if (context.Character.Find(this.id) != null) {
+            if (newObject == false) {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int filmId in this.filmIds) {
                     if (context.Film.Find(filmId) != null) {

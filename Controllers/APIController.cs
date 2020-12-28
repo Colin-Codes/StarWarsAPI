@@ -46,15 +46,15 @@ namespace star_wars_api.Controllers {
         [HttpPost]
         public string Update() {
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
-                List<Model> models = JsonSerializer.Deserialize<List<Model>>(reader.ReadToEnd());
-                string names = "";
-                foreach (Model model in models) {
-                    dbSet.Update(model);
-                    names += model.id + ", ";
+                List<JsonConverter> JSONinputs = JsonSerializer.Deserialize<List<JsonConverter>>(reader.ReadToEnd());
+                List<JsonConverter> JSONoutputs = new List<JsonConverter>();
+                foreach (JsonConverter json in JSONinputs) {
+                    dbSet.Update(json.ToModel(context));
+                    JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(json.id)));
                 }                
                 context.SaveChanges();
-                return names.Substring(0, names.Length - 2) + " updated";
-            }   
+                return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
+            } 
         }
 
         public string Delete(int id) {

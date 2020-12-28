@@ -25,6 +25,8 @@ namespace star_wars_api.Controllers {
         public new List<int> starshipIds { get; set; }
         public new List<int> vehicleIds { get; set; }
 
+        public FilmJSONConverter () {}
+
         public FilmJSONConverter (Film film) {
             this.id = film.id;
             this.created = film.created;
@@ -35,6 +37,11 @@ namespace star_wars_api.Controllers {
             this.producer = film.producer;
             this.releaseDate = film.releaseDate;
             this.title = film.title;
+            this.characterIds = new List<int>();
+            this.planetIds = new List<int>();
+            this.speciesIds = new List<int>();
+            this.starshipIds = new List<int>();
+            this.vehicleIds = new List<int>();
 
             if (film.characterIds != null) {
                 foreach (FilmCharacter character in film.characterIds) {
@@ -69,7 +76,13 @@ namespace star_wars_api.Controllers {
         }
 
         public Film ToModel(star_wars_apiContext context) {
-            Film film = new Film();
+            Film film = context.Film.Find(this.id);
+            
+            bool newObject = false;
+            if (film == null) {
+                newObject = true;
+                film = new Film();
+            }
 
             film.id = this.id;
             film.created = this.created;
@@ -80,8 +93,13 @@ namespace star_wars_api.Controllers {
             film.producer = this.producer;
             film.releaseDate = this.releaseDate;
             film.title = this.title;
+            film.characterIds = new List<FilmCharacter>();
+            film.planetIds = new List<FilmPlanet>();
+            film.speciesIds = new List<FilmSpecies>();
+            film.starshipIds = new List<FilmStarship>();
+            film.vehicleIds = new List<FilmVehicle>();
 
-            if (context.Character.Find(this.id) != null) {
+            if (newObject == false) {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int characterId in this.characterIds) {
                     if (context.Character.Find(characterId) != null) {

@@ -30,3 +30,5 @@ The use of IStarWarsJSONConverter<Model> objects adds a layer of complexity and 
             ],
 
 However, if this were a vendor API, it is unlikely that this could be changed. In this scenario, it would be worth researching an alternative compatible method of storing many-to-many mappings. Alternatively, we could accept that the classes implementing IStarWarsJSONConverter<Model> perform a useful function and would be a valuable platform to add validation of data imports.
+
+Additionally, data objects often need to created and then updated, as the many-many mappings cannot be stored until the object exists in the database. This could be simply (albeit inefficiently) resolved by incorporating an update routine after the object is initially added. 
