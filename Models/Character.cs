@@ -5,8 +5,8 @@ namespace star_wars_api.Models
 {
     public class Character : StarWarsModel {
         public string name { get; set; }
-        public int height { get; set; }
-        public int mass { get; set; }
+        public int? height { get; set; }
+        public int? mass { get; set; }
         public string hairColor { get; set; }
         public string eyeColor { get; set; }
         public string birthYear { get; set; }

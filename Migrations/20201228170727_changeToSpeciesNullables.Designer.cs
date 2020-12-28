@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using star_wars_api.Data;
 
 namespace star_wars_api.Migrations
 {
     [DbContext(typeof(star_wars_apiContext))]
-    partial class star_wars_apiContextModelSnapshot : ModelSnapshot
+    [Migration("20201228170727_changeToSpeciesNullables")]
+    partial class changeToSpeciesNullables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,8 +149,6 @@ namespace star_wars_api.Migrations
 
                     b.HasKey("FilmId", "StarshipId");
 
-                    b.HasIndex("StarshipId");
-
                     b.ToTable("FilmStarship");
                 });
 
@@ -160,7 +160,12 @@ namespace star_wars_api.Migrations
                     b.Property<int>("VehicleId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("Starshipid")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("FilmId", "VehicleId");
+
+                    b.HasIndex("Starshipid");
 
                     b.HasIndex("VehicleId");
 
@@ -322,29 +327,29 @@ namespace star_wars_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("cargoCapacity")
+                    b.Property<int>("cargoCapacity")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("consumables")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("costInCredits")
+                    b.Property<int>("costInCredits")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("created")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("crew")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("crew")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("edited")
                         .HasColumnType("TEXT");
 
-                    b.Property<double?>("hyperdriveRating")
+                    b.Property<double>("hyperdriveRating")
                         .HasColumnType("REAL");
 
-                    b.Property<int?>("length")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("length")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("manufacturer")
                         .HasColumnType("TEXT");
@@ -358,7 +363,7 @@ namespace star_wars_api.Migrations
                     b.Property<string>("name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("passengers")
+                    b.Property<int>("passengers")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("starshipClass")
@@ -390,26 +395,26 @@ namespace star_wars_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("cargoCapacity")
+                    b.Property<int>("cargoCapacity")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("consumables")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("costInCredits")
+                    b.Property<int>("costInCredits")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("created")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("crew")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("crew")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("edited")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("length")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("length")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("manufacturer")
                         .HasColumnType("TEXT");
@@ -420,7 +425,7 @@ namespace star_wars_api.Migrations
                     b.Property<string>("name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("passengers")
+                    b.Property<int>("passengers")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("vehicleClass")
@@ -498,12 +503,6 @@ namespace star_wars_api.Migrations
                         .HasForeignKey("FilmId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("star_wars_api.Models.Starship", null)
-                        .WithMany("filmIds")
-                        .HasForeignKey("StarshipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("star_wars_api.Models.FilmVehicle", b =>
@@ -513,6 +512,10 @@ namespace star_wars_api.Migrations
                         .HasForeignKey("FilmId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("star_wars_api.Models.Starship", null)
+                        .WithMany("filmIds")
+                        .HasForeignKey("Starshipid");
 
                     b.HasOne("star_wars_api.Models.Vehicle", null)
                         .WithMany("filmIds")

@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace star_wars_api.Models {
     public class Species : StarWarsModel {
-        public double averageHeight { get; set; }
-        public int averageLifespan { get; set; }
+        public double? averageHeight { get; set; }
+        public int? averageLifespan { get; set; }
         public string classification { get; set; }
         public string designation { get; set; }
         public List<SpeciesEyeColor> eyeColors { get; set; }
         public List<SpeciesHairColor> hairColors { get; set; }
-        public int homeworldId { get; set; }
+        public int? homeworldId { get; set; }
         public string language { get; set; }
         public string name { get; set; }
         public List<SpeciesCharacter> peopleIds { get; set; }

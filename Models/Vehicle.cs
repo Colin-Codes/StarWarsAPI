@@ -7,6 +7,7 @@ namespace star_wars_api.Models {
     public class Vehicle : Transport {
         public string vehicleClass { get; set; }
         public List<VehicleCharacter> pilotIds { get; set; } 
+        public List<FilmVehicle> filmIds { get; set; }
     }
 
     public class VehicleCharacter {

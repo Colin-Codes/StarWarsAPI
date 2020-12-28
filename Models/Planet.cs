@@ -6,15 +6,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace star_wars_api.Models {
     public class Planet : StarWarsModel {
         public string climate { get; set; }
-        public int diameter { get; set; }
+        public int? diameter { get; set; }
         public List<FilmPlanet> filmIds { get; set; }
-        public string gravity { get; set; }
+        public double? gravity { get; set; }
         public string name { get; set; }
-        public int orbitalPeriod { get; set; }
-        public int population { get; set; }
+        public int? orbitalPeriod { get; set; }
+        public int? population { get; set; }
         public List<PlanetCharacter> residentIds { get; set; }
-        public string rotationPeriod { get; set; }
-        public string surfaceWater { get; set; }
+        public int? rotationPeriod { get; set; }
+        public double? surfaceWater { get; set; }
         public string terrain { get; set; }
     }
 

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using star_wars_api.Data;
 
 namespace star_wars_api.Migrations
 {
     [DbContext(typeof(star_wars_apiContext))]
-    partial class star_wars_apiContextModelSnapshot : ModelSnapshot
+    [Migration("20201228173439_changeToTransportNullables")]
+    partial class changeToTransportNullables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -18,7 +18,24 @@ namespace star_wars_api.Controllers {
         {  
             return (T) Activator.CreateInstance(typeof (T), lstArgument);  
         } 
-                
+        
+        public string Index() {    
+            List<JsonConverter> JSONoutputs = new List<JsonConverter>();
+            bool finished = false;
+            int id = 1;
+            while (finished == false) {
+                Model model = dbSet.Find(id);
+                if (model == null) {
+                    finished = true;
+                }
+                else {
+                    JSONoutputs.Add(GetJSON<JsonConverter>(model));
+                    id++;
+                }
+            }
+            return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
+        }
+        
         [HttpPost]
         public string Create() {    
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
@@ -33,14 +50,10 @@ namespace star_wars_api.Controllers {
             }       
         }
         
-        public string Retrieve(int? id) {
-            Model model = dbSet.Find(id);
-            return model.id + " found";
-        }
-        
-        public string Retrieve(int? pageSize = 0, int? pageIndex = 0) {
-            // Film film = _context.Film.Find(id);
-            return "all films found";
+        public string Retrieve(int id) {
+            List<JsonConverter> JSONoutputs = new List<JsonConverter>();
+            JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(id)));
+            return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
         }
 
         [HttpPost]

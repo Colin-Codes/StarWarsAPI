@@ -6,9 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace star_wars_api.Models {
     public class Starship : Transport {
         public string mglt { get; set; }
-        public double hyperdriveRating { get; set; }
+        public double? hyperdriveRating { get; set; }
         public string starshipClass { get; set; }    
         public List<StarshipCharacter> pilotIds { get; set; } 
+        public List<FilmStarship> filmIds { get; set; }
     }
 
     public class StarshipCharacter {
