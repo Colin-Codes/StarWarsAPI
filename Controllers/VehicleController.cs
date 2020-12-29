@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using star_wars_api.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace star_wars_api.Controllers {
@@ -22,9 +23,12 @@ namespace star_wars_api.Controllers {
         public new List<int> filmIds { get; set; }
         public new List<int> pilotIds { get; set; }
 
-        public VehicleJSONConverter () {}
+        public VehicleJSONConverter () {
+            this.filmIds = new List<int>();
+            this.pilotIds = new List<int>();
+        }
 
-        public VehicleJSONConverter (Vehicle Vehicle) {
+        public VehicleJSONConverter (Vehicle Vehicle, star_wars_apiContext context) {
             this.id = Vehicle.id;
             this.created = Vehicle.created;
             this.edited = Vehicle.edited;
@@ -41,16 +45,14 @@ namespace star_wars_api.Controllers {
             this.filmIds = new List<int>();
             this.pilotIds = new List<int>();
 
-            if (Vehicle.filmIds != null) {
-                foreach (FilmVehicle film in Vehicle.filmIds) {
-                    this.filmIds.Add(film.FilmId);
-                }
+            List<FilmVehicle> filmVehicles = context.FilmVehicle.Where(b => b.VehicleId == Vehicle.id).ToList();
+            foreach (FilmVehicle film in filmVehicles) {
+                this.filmIds.Add(film.FilmId);
             }
 
-            if (Vehicle.pilotIds != null) {
-                foreach (VehicleCharacter character in Vehicle.pilotIds) {
-                    this.pilotIds.Add(character.characterId);
-                }
+            List<VehicleCharacter> vehicleCharacters = context.VehicleCharacter.Where(b => b.vehicleId == Vehicle.id).ToList();
+            foreach (VehicleCharacter character in vehicleCharacters) {
+                this.pilotIds.Add(character.characterId);
             }
 
         }
@@ -84,13 +86,23 @@ namespace star_wars_api.Controllers {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int filmId in this.filmIds) {
                     if (context.Film.Find(filmId) != null) {
-                        Vehicle.filmIds.Add(new FilmVehicle(filmId, this.id));
+                        FilmVehicle filmVehicle = context.FilmVehicle.Find(filmId, this.id);
+                        if (filmVehicle == null) {
+                            Vehicle.filmIds.Add(new FilmVehicle(filmId, this.id));
+                        } else {
+                            Vehicle.filmIds.Add(filmVehicle);
+                        }  
                     }
                 }
 
                 foreach (int characterId in this.pilotIds) {
                     if (context.Character.Find(characterId) != null) {
-                        Vehicle.pilotIds.Add(new VehicleCharacter(this.id, characterId));
+                        VehicleCharacter vehicleCharacter = context.VehicleCharacter.Find(this.id, characterId);
+                        if (vehicleCharacter == null) {
+                            Vehicle.pilotIds.Add(new VehicleCharacter(this.id, characterId));
+                        } else {
+                            Vehicle.pilotIds.Add(vehicleCharacter);
+                        }  
                     }
                 }
             }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using star_wars_api.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace star_wars_api.Controllers {
@@ -22,16 +23,9 @@ namespace star_wars_api.Controllers {
         public string Index() {    
             List<JsonConverter> JSONoutputs = new List<JsonConverter>();
             bool finished = false;
-            int id = 1;
-            while (finished == false) {
-                Model model = dbSet.Find(id);
-                if (model == null) {
-                    finished = true;
-                }
-                else {
-                    JSONoutputs.Add(GetJSON<JsonConverter>(model));
-                    id++;
-                }
+            List<Model> models = dbSet.Where(b => b.id != null).ToList();
+            foreach (Model model in models) {
+                JSONoutputs.Add(GetJSON<JsonConverter>(model, context));
             }
             return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
         }
@@ -42,8 +36,9 @@ namespace star_wars_api.Controllers {
                 List<JsonConverter> JSONinputs = JsonSerializer.Deserialize<List<JsonConverter>>(reader.ReadToEnd());
                 List<JsonConverter> JSONoutputs = new List<JsonConverter>();
                 foreach (JsonConverter json in JSONinputs) {
-                    dbSet.Add(json.ToModel(context));
-                    JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(json.id)));
+                    Model model = json.ToModel(context);
+                    dbSet.Add(model);
+                    JSONoutputs.Add(GetJSON<JsonConverter>(model, context));
                 }                
                 context.SaveChanges();
                 return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
@@ -52,7 +47,7 @@ namespace star_wars_api.Controllers {
         
         public string Retrieve(int id) {
             List<JsonConverter> JSONoutputs = new List<JsonConverter>();
-            JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(id)));
+            JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(id), context));
             return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
         }
 
@@ -62,8 +57,9 @@ namespace star_wars_api.Controllers {
                 List<JsonConverter> JSONinputs = JsonSerializer.Deserialize<List<JsonConverter>>(reader.ReadToEnd());
                 List<JsonConverter> JSONoutputs = new List<JsonConverter>();
                 foreach (JsonConverter json in JSONinputs) {
-                    dbSet.Update(json.ToModel(context));
-                    JSONoutputs.Add(GetJSON<JsonConverter>(dbSet.Find(json.id)));
+                    Model model = json.ToModel(context);
+                    dbSet.Update(model);
+                    JSONoutputs.Add(GetJSON<JsonConverter>(model, context));
                 }                
                 context.SaveChanges();
                 return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);

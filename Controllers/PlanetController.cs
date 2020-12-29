@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using star_wars_api.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace star_wars_api.Controllers {
@@ -22,9 +23,12 @@ namespace star_wars_api.Controllers {
         public new List<int> filmIds { get; set; }
         public new List<int> residentIds { get; set; }
 
-        public PlanetJSONConverter () {}
+        public PlanetJSONConverter () {
+            this.filmIds = new List<int>();
+            this.residentIds = new List<int>();
+        }
 
-        public PlanetJSONConverter (Planet planet) {
+        public PlanetJSONConverter (Planet planet, star_wars_apiContext context) {
             this.id = planet.id;
             this.created = planet.created;
             this.edited = planet.edited;
@@ -41,16 +45,13 @@ namespace star_wars_api.Controllers {
             this.filmIds = new List<int>();
             this.residentIds = new List<int>();
 
-            if (planet.filmIds != null) {
-                foreach (FilmPlanet film in planet.filmIds) {
-                    this.filmIds.Add(film.FilmId);
-                }
+            List<FilmPlanet> filmPlanets = context.FilmPlanet.Where(b => b.PlanetId == planet.id).ToList();
+                foreach (FilmPlanet film in filmPlanets) {
+                this.filmIds.Add(film.FilmId);
             }
-
-            if (planet.residentIds != null) {
-                foreach (PlanetCharacter character in planet.residentIds) {
-                    this.residentIds.Add(character.characterId);
-                }
+            List<PlanetCharacter> planetCharacters = context.PlanetCharacter.Where(b => b.planetId == planet.id).ToList();
+            foreach (PlanetCharacter character in planetCharacters) {
+                this.residentIds.Add(character.characterId);
             }
 
         }
@@ -84,13 +85,23 @@ namespace star_wars_api.Controllers {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int filmId in this.filmIds) {
                     if (context.Film.Find(filmId) != null) {
-                        planet.filmIds.Add(new FilmPlanet(filmId, this.id));
+                        FilmPlanet filmPlanet = context.FilmPlanet.Find(filmId, this.id);
+                        if (filmPlanet == null) {
+                            planet.filmIds.Add(new FilmPlanet(filmId, this.id));
+                        } else {
+                            planet.filmIds.Add(filmPlanet);
+                        }  
                     }
                 }
 
                 foreach (int characterId in this.residentIds) {
                     if (context.Character.Find(characterId) != null) {
-                        planet.residentIds.Add(new PlanetCharacter(this.id, characterId));
+                        PlanetCharacter planetCharacter = context.PlanetCharacter.Find(this.id, characterId);
+                        if (planetCharacter == null) {
+                            planet.residentIds.Add(new PlanetCharacter(this.id, characterId));
+                        } else {
+                            planet.residentIds.Add(planetCharacter);
+                        }  
                     }
                 }
             }

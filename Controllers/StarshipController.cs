@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using star_wars_api.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace star_wars_api.Controllers {
@@ -22,9 +23,12 @@ namespace star_wars_api.Controllers {
         public new List<int> filmIds { get; set; }
         public new List<int> pilotIds { get; set; }
 
-        public StarshipJSONConverter () {}
+        public StarshipJSONConverter () {
+            this.filmIds = new List<int>();
+            this.pilotIds = new List<int>();
+        }
 
-        public StarshipJSONConverter (Starship starship) {
+        public StarshipJSONConverter (Starship starship, star_wars_apiContext context) {
             this.id = starship.id;
             this.created = starship.created;
             this.edited = starship.edited;
@@ -43,16 +47,14 @@ namespace star_wars_api.Controllers {
             this.filmIds = new List<int>();
             this.pilotIds = new List<int>();
 
-            if (starship.filmIds != null) {
-                foreach (FilmStarship film in starship.filmIds) {
-                    this.filmIds.Add(film.FilmId);
-                }
+            List<FilmStarship> filmStarships = context.FilmStarship.Where(b => b.StarshipId == starship.id).ToList();
+            foreach (FilmStarship film in filmStarships) {
+                this.filmIds.Add(film.FilmId);
             }
 
-            if (starship.pilotIds != null) {
-                foreach (StarshipCharacter character in starship.pilotIds) {
-                    this.pilotIds.Add(character.characterId);
-                }
+            List<StarshipCharacter> starshipCharacters = context.StarshipCharacter.Where(b => b.starshipId == starship.id).ToList();
+            foreach (StarshipCharacter character in starshipCharacters) {
+                this.pilotIds.Add(character.characterId);
             }
 
         }
@@ -88,13 +90,23 @@ namespace star_wars_api.Controllers {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int filmId in this.filmIds) {
                     if (context.Film.Find(filmId) != null) {
-                        starship.filmIds.Add(new FilmStarship(filmId, this.id));
+                        FilmStarship filmStarship = context.FilmStarship.Find(filmId, this.id);
+                        if (filmStarship == null) {
+                            starship.filmIds.Add(new FilmStarship(filmId, this.id));
+                        } else {
+                            starship.filmIds.Add(filmStarship);
+                        }  
                     }
                 }
 
                 foreach (int characterId in this.pilotIds) {
                     if (context.Character.Find(characterId) != null) {
-                        starship.pilotIds.Add(new StarshipCharacter(this.id, characterId));
+                        StarshipCharacter starshipCharacter = context.StarshipCharacter.Find(this.id, characterId);
+                        if (starshipCharacter == null) {
+                            starship.pilotIds.Add(new StarshipCharacter(this.id, characterId));
+                        } else {
+                            starship.pilotIds.Add(starshipCharacter);
+                        }  
                     }
                 }
             }

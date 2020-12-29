@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using star_wars_api.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace star_wars_api.Controllers {
@@ -25,9 +26,15 @@ namespace star_wars_api.Controllers {
         public new List<string> hairColors { get; set; }
         public new List<string> skinColors { get; set; }
 
-        public SpeciesJSONConverter () {}
+        public SpeciesJSONConverter () {
+            this.filmIds = new List<int>();
+            this.peopleIds = new List<int>();
+            this.eyeColors = new List<string>();
+            this.hairColors = new List<string>();
+            this.skinColors = new List<string>();
+        }
 
-        public SpeciesJSONConverter (Species species) {
+        public SpeciesJSONConverter (Species species, star_wars_apiContext context) {
             this.id = species.id;
             this.created = species.created;
             this.edited = species.edited;
@@ -44,34 +51,29 @@ namespace star_wars_api.Controllers {
             this.hairColors = new List<string>();
             this.skinColors = new List<string>();
 
-            if (species.filmIds != null) {
-                foreach (FilmSpecies film in species.filmIds) {
-                    this.filmIds.Add(film.FilmId);
-                }
+            List<FilmSpecies> filmSpecies = context.FilmSpecies.Where(b => b.SpeciesId == species.id).ToList();
+            foreach (FilmSpecies film in filmSpecies) {
+                this.filmIds.Add(film.FilmId);
             }
 
-            if (species.peopleIds != null) {
-                foreach (SpeciesCharacter character in species.peopleIds) {
-                    this.peopleIds.Add(character.characterId);
-                }
+            List<SpeciesCharacter> speciesCharacters = context.SpeciesCharacter.Where(b => b.speciesId == species.id).ToList();
+            foreach (SpeciesCharacter character in speciesCharacters) {
+                this.peopleIds.Add(character.characterId);
             }
 
-            if (species.eyeColors != null) {
-                foreach (SpeciesEyeColor eyeColor in species.eyeColors) {
-                    this.eyeColors.Add(eyeColor.eyeColor);
-                }
+            List<SpeciesEyeColor> speciesEyeColors = context.SpeciesEyeColor.Where(b => b.speciesId == species.id).ToList();
+            foreach (SpeciesEyeColor eyeColor in speciesEyeColors) {
+                this.eyeColors.Add(eyeColor.eyeColor);
             }
 
-            if (species.hairColors != null) {
-                foreach (SpeciesHairColor hairColor in species.hairColors) {
-                    this.hairColors.Add(hairColor.hairColor);
-                }
+            List<SpeciesHairColor> speciesHairColors = context.SpeciesHairColor.Where(b => b.speciesId == species.id).ToList();
+            foreach (SpeciesHairColor hairColor in speciesHairColors) {
+                this.hairColors.Add(hairColor.hairColor);
             }
 
-            if (species.skinColors != null) {
-                foreach (SpeciesSkinColor skinColor in species.skinColors) {
-                    this.skinColors.Add(skinColor.skinColor);
-                }
+            List<SpeciesSkinColor> speciesSkinColors = context.SpeciesSkinColor.Where(b => b.speciesId == species.id).ToList();
+            foreach (SpeciesSkinColor skinColor in speciesSkinColors) {
+                this.skinColors.Add(skinColor.skinColor);
             }
 
         }
@@ -105,26 +107,51 @@ namespace star_wars_api.Controllers {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int filmId in this.filmIds) {
                     if (context.Film.Find(filmId) != null) {
-                        species.filmIds.Add(new FilmSpecies(filmId, this.id));
+                        FilmSpecies filmSpecies = context.FilmSpecies.Find(filmId, this.id);
+                        if (filmSpecies == null) {
+                            species.filmIds.Add(new FilmSpecies(filmId, this.id));
+                        } else {
+                            species.filmIds.Add(filmSpecies);
+                        }  
                     }
                 }
 
                 foreach (int characterId in this.peopleIds) {
                     if (context.Character.Find(characterId) != null) {
-                        species.peopleIds.Add(new SpeciesCharacter(this.id, characterId));
+                        SpeciesCharacter speciesCharacter = context.SpeciesCharacter.Find(this.id, characterId);
+                        if (speciesCharacter == null) {
+                            species.peopleIds.Add(new SpeciesCharacter(this.id, characterId));
+                        } else {
+                            species.peopleIds.Add(speciesCharacter);
+                        }  
                     }
                 }
 
                 foreach (string eyeColor in this.eyeColors) {
-                    species.eyeColors.Add(new SpeciesEyeColor(this.id, eyeColor));
+                    SpeciesEyeColor speciesEyeColor = context.SpeciesEyeColor.Find(this.id, eyeColor);
+                    if (speciesEyeColor == null) {
+                        species.eyeColors.Add(new SpeciesEyeColor(this.id, eyeColor));
+                    } else {
+                        species.eyeColors.Add(speciesEyeColor);
+                    }  
                 }
 
                 foreach (string hairColor in this.hairColors) {
-                    species.hairColors.Add(new SpeciesHairColor(this.id, hairColor));
+                    SpeciesHairColor speciesHairColor = context.SpeciesHairColor.Find(this.id, hairColor);
+                    if (speciesHairColor == null) {
+                        species.hairColors.Add(new SpeciesHairColor(this.id, hairColor));
+                    } else {
+                        species.hairColors.Add(speciesHairColor);
+                    }  
                 }
 
                 foreach (string skinColor in this.skinColors) {
-                    species.skinColors.Add(new SpeciesSkinColor(this.id, skinColor));
+                    SpeciesSkinColor speciesSkinColor = context.SpeciesSkinColor.Find(this.id, skinColor);
+                    if (speciesSkinColor == null) {
+                        species.skinColors.Add(new SpeciesSkinColor(this.id, skinColor));
+                    } else {
+                        species.skinColors.Add(speciesSkinColor);
+                    }  
                 }
             }
             return species;

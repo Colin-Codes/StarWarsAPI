@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using star_wars_api.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace star_wars_api.Controllers {
@@ -24,9 +25,14 @@ namespace star_wars_api.Controllers {
         public new List<int> vehicleIds { get; set; }
         public new List<int> starshipIds { get; set; }
 
-        public CharacterJSONConverter () {}
+        public CharacterJSONConverter () {
+            this.filmIds = new List<int>();
+            this.speciesIds = new List<int>();
+            this.vehicleIds = new List<int>();
+            this.starshipIds = new List<int>();
+        }
 
-        public CharacterJSONConverter(Character character) {
+        public CharacterJSONConverter(Character character, star_wars_apiContext context) {
             this.id = character.id;
             this.created = character.created;
             this.edited = character.edited;
@@ -43,28 +49,24 @@ namespace star_wars_api.Controllers {
             this.vehicleIds = new List<int>();
             this.starshipIds = new List<int>();
 
-            if (character.filmIds != null) {
-                foreach (FilmCharacter film in character.filmIds) {
-                    this.filmIds.Add(film.FilmId);
-                }
+            List<FilmCharacter> filmCharacters = context.FilmCharacter.Where(b => b.CharacterId == character.id).ToList();
+            foreach (FilmCharacter film in filmCharacters) {
+                this.filmIds.Add(film.FilmId);
             }
 
-            if (character.speciesIds != null) {
-                foreach (SpeciesCharacter species in character.speciesIds) {
-                    this.speciesIds.Add(species.speciesId);
-                }
+            List<SpeciesCharacter> speciesCharacters = context.SpeciesCharacter.Where(b => b.characterId == character.id).ToList();
+            foreach (SpeciesCharacter species in speciesCharacters) {
+                this.speciesIds.Add(species.speciesId);
             }
 
-            if (character.vehicleIds != null) {
-                foreach (VehicleCharacter vehicle in character.vehicleIds) {
-                    this.vehicleIds.Add(vehicle.vehicleId);
-                }
+            List<VehicleCharacter> vehicleCharacters = context.VehicleCharacter.Where(b => b.characterId == character.id).ToList();
+            foreach (VehicleCharacter vehicle in vehicleCharacters) {
+                this.vehicleIds.Add(vehicle.vehicleId);
             }
 
-            if (character.starshipIds != null) {
-                foreach (StarshipCharacter starship in character.starshipIds) {
-                    this.starshipIds.Add(starship.starshipId);
-                }
+            List<StarshipCharacter> starshipCharacters = context.StarshipCharacter.Where(b => b.characterId == character.id).ToList();
+            foreach (StarshipCharacter starship in starshipCharacters) {
+                this.starshipIds.Add(starship.starshipId);
             }
 
         }
@@ -96,25 +98,45 @@ namespace star_wars_api.Controllers {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.
                 foreach (int filmId in this.filmIds) {
                     if (context.Film.Find(filmId) != null) {
-                        character.filmIds.Add(new FilmCharacter(filmId, this.id));
+                        FilmCharacter filmCharacter = context.FilmCharacter.Find(filmId, this.id);
+                        if (filmCharacter == null) {
+                            character.filmIds.Add(new FilmCharacter(filmId, this.id));
+                        } else {
+                            character.filmIds.Add(filmCharacter);
+                        }                        
                     }
                 }
 
                 foreach (int speciesId in this.speciesIds) {
                     if (context.Species.Find(speciesId) != null) {
-                        character.speciesIds.Add(new SpeciesCharacter(speciesId, this.id));
+                        SpeciesCharacter speciesCharacter = context.SpeciesCharacter.Find(speciesId, this.id);
+                        if (speciesCharacter == null) {
+                            character.speciesIds.Add(new SpeciesCharacter(speciesId, this.id));
+                        } else {
+                            character.speciesIds.Add(speciesCharacter);
+                        }    
                     }
                 }
 
                 foreach (int vehicleId in this.vehicleIds) {
                     if (context.Vehicle.Find(vehicleId) != null) {
-                        character.vehicleIds.Add(new VehicleCharacter(vehicleId, this.id));
+                        VehicleCharacter vehicleCharacter = context.VehicleCharacter.Find(vehicleId, this.id);
+                        if (vehicleCharacter == null) {
+                            character.vehicleIds.Add(new VehicleCharacter(vehicleId, this.id));
+                        } else {
+                            character.vehicleIds.Add(vehicleCharacter);
+                        }  
                     }
                 }
 
                 foreach (int starshipId in this.starshipIds) {
                     if (context.Starship.Find(starshipId) != null) {
-                        character.starshipIds.Add(new StarshipCharacter(starshipId, this.id));
+                        StarshipCharacter starshipCharacter = context.StarshipCharacter.Find(starshipId, this.id);
+                        if (starshipCharacter == null) {
+                            character.starshipIds.Add(new StarshipCharacter(starshipId, this.id));
+                        } else {
+                            character.starshipIds.Add(starshipCharacter);
+                        }  
                     }
                 }
             }
