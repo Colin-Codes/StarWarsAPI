@@ -16,9 +16,14 @@ namespace star_wars_api.Controllers {
             dbSet = context.Film;
         }
         
-        public string List() {    
+        public string List(int? pageIndex = 0, int? pageSize = 0) {    
             List<ChallengeOutput> challengeOutputs = new List<ChallengeOutput>();
-            List<Film> films = dbSet.Where(b => b.id != null).ToList();
+            List<Film> films = null;
+            if (pageSize != 0 && pageIndex != 0) {
+                films = dbSet.Where(b => pageIndex * pageSize < b.id && b.id <= (pageIndex + 1) * pageSize).ToList();
+            } else {
+                films = dbSet.Where(b => b.id != null).ToList();
+            }
             foreach (Film film in films) { 
                 // Load character mapping objects           
                 film.characterIds = context.FilmCharacter.Where(b => b.FilmId == film.id).ToList();
