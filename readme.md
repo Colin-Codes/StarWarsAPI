@@ -1,4 +1,7 @@
 # Star Wars API
+C#, MVC, Entity Framework: Build an API according to specified challenge rules to handle Star Wars data
+
+## Quickstart
 See the challenge folder for details and initial data
 
 ## View results
@@ -42,3 +45,6 @@ Additionally, data objects often need to created and then updated, as the many-m
 the ToModel method of IStarWarsJSONConverter<Model> classes could be DRY-er.
 
 There is very little validation present, apart from that present for challenge 2. For instance, objects can be added with fields missing, that cannot then be retrieved.
+
+## Feedback
+Challenges 3 - 5 would have made more sense to focus on other entities, as there are only 6 films in the data - other entities may better be able to demonstrate filtering and paging.
