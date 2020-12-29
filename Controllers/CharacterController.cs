@@ -79,20 +79,35 @@ namespace star_wars_api.Controllers {
                 newObject = true;
                 character = new Character();
             }
+
             character.id = this.id;
-            character.created = this.created;
-            character.edited = this.edited;
-            character.name = this.name;
+            if (newObject == true) {
+                character.created = DateTime.Now;
+            } else {
+                character.created = this.created;
+            }
+            character.edited = DateTime.Now;
+            if (this.name == null) {
+                throw new ArgumentException("The character name is mandatory");
+            } else {
+                character.name = this.name;
+            }
             character.height = this.height;
             character.hairColor = this.hairColor;
             character.eyeColor = this.eyeColor;
             character.birthYear = this.birthYear;
             character.gender = this.gender;
             character.homeworldId = this.homeworldId;
-            character.filmIds = new List<FilmCharacter>();
-            character.speciesIds = new List<SpeciesCharacter>();
+            character.filmIds = new List<FilmCharacter>(); //Mandatory - at least one
+            character.speciesIds = new List<SpeciesCharacter>(); //Mandatory - one only
             character.vehicleIds = new List<VehicleCharacter>();
             character.starshipIds = new List<StarshipCharacter>();
+            if (this.filmIds.Count <=1) {
+                throw new ArgumentException("The character must be linked to at least one film");
+            }
+            if (this.speciesIds.Count !=1) {
+                throw new ArgumentException("The character must be linked to one and only one species");
+            }
 
             if (newObject == false) {
                 // many-many mapping classes have the IDs as foreign keys - if the object does not yet exist it cannot be linked to other objects.

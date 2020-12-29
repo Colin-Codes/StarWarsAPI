@@ -37,9 +37,9 @@ namespace star_wars_api.Controllers {
                 foreach (JsonConverter json in JSONinputs) {
                     Model model = json.ToModel(context);
                     dbSet.Add(model);
+                    context.SaveChanges();
                     JSONoutputs.Add(GetJSON<JsonConverter>(model, context));
                 }                
-                context.SaveChanges();
                 return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
             }       
         }
