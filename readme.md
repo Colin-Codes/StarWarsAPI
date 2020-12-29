@@ -1,6 +1,8 @@
 # Star Wars API
 See the challenge folder for details and initial data
 
+## View results
+
 ## Building the API
 I have used the following tutorials to quickly build out MVC and Entity Framework functionality, upon which to construct the API. 
 https://docs.microsoft.com/en-us/dotnet/api/system.net.http.json.httpcontentjsonextensions?view=net-5.0

@@ -22,7 +22,6 @@ namespace star_wars_api.Controllers {
         
         public string Index() {    
             List<JsonConverter> JSONoutputs = new List<JsonConverter>();
-            bool finished = false;
             List<Model> models = dbSet.Where(b => b.id != null).ToList();
             foreach (Model model in models) {
                 JSONoutputs.Add(GetJSON<JsonConverter>(model, context));

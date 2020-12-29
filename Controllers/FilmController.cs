@@ -15,6 +15,36 @@ namespace star_wars_api.Controllers {
             context = _context;
             dbSet = context.Film;
         }
+        
+        public string List() {    
+            List<ChallengeOutput> challengeOutputs = new List<ChallengeOutput>();
+            List<Film> films = dbSet.Where(b => b.id != null).ToList();
+            foreach (Film film in films) { 
+                // Load character mapping objects           
+                film.characterIds = context.FilmCharacter.Where(b => b.FilmId == film.id).ToList();
+
+                challengeOutputs.Add(new ChallengeOutput(film, context));
+            }
+            return JsonSerializer.Serialize<List<ChallengeOutput>>(challengeOutputs);
+        }
+
+    }
+
+    public class ChallengeOutput {
+        // Defines the output format for the challenge
+        public string filmName { get; set; }
+        public List<String> filmCharacters { get; set; }
+
+        public ChallengeOutput () {}
+
+        public ChallengeOutput (Film film, star_wars_apiContext context) {
+            this.filmName = film.title;
+            filmCharacters = new List<string>();
+            foreach (FilmCharacter filmCharacter in film.characterIds) {
+                Character character = context.Character.Find(filmCharacter.CharacterId);
+                filmCharacters.Add(character.name);
+            }
+        }
 
     }
 
