@@ -16,7 +16,7 @@ namespace star_wars_api.Controllers {
             dbSet = context.Film;
         }
         
-        public string List(int? pageIndex = 0, int? pageSize = 0, string? species = "") {    
+        public string List(int? pageIndex = 0, int? pageSize = 0, string? species = "", string? planet = "") {    
             List<ChallengeOutput> challengeOutputs = new List<ChallengeOutput>();
             List<FilmSpecies> filmSpecies = null;
             List<int> filmSpeciesFilter = new List<int>();
@@ -27,17 +27,28 @@ namespace star_wars_api.Controllers {
                     filmSpeciesFilter.Add(_filmspecies.FilmId);
                 }
             }
+            List<FilmPlanet> filmPlanets = null;
+            List<int> filmPlanetFilter = new List<int>();
+            if (planet != "") {
+                int planetId = context.Planet.Where(b => b.name == planet).FirstOrDefault().id;
+                filmPlanets = context.FilmPlanet.Where(b => b.PlanetId == planetId).ToList();
+                foreach (FilmPlanet filmPlanet in filmPlanets) {
+                    filmPlanetFilter.Add(filmPlanet.FilmId);
+                }
+            }
             List<Film> films = null;
             if (pageSize != 0) {
                 films = context.Film.Where(
                     b => pageIndex * pageSize < b.id 
-                        && b.id <= (pageIndex + 1) * pageSize
+                        && b.id <= ((pageIndex + 1) * pageSize)
                         && (species == "" || filmSpeciesFilter.Contains(b.id))
+                        && (planet == "" || filmPlanetFilter.Contains(b.id))
                 ).ToList();
             } else {
                 films = context.Film.Where(
                     b => b.id != null
                         && (species == "" || filmSpeciesFilter.Contains(b.id))
+                        && (planet == "" || filmPlanetFilter.Contains(b.id))
                 ).ToList();
             }
             foreach (Film film in films) { 
