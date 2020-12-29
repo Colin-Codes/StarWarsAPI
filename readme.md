@@ -4,6 +4,7 @@ C#, MVC, Entity Framework: Build an API according to specified challenge rules t
 ## Quickstart
 See the challenge folder for details and initial data
 
+
 ## View results
 
 ## Building the API
