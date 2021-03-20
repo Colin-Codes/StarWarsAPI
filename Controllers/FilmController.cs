@@ -7,14 +7,25 @@ using star_wars_api.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using star_wars_api.Models.EntityModels;
+using star_wars_api.Services;
 
 namespace star_wars_api.Controllers {
-    public class FilmController : APIController<Film, FilmJSONConverter> {
-
+    public class FilmController : APIController<Film, FilmJSONConverter>
+    {
+        private FilmService _filmService;
         public FilmController(star_wars_apiContext _context) {
             context = _context;
             dbSet = context.Film;
+            _filmService = new FilmService(context);
         }
+
+        public ActionResult Index()
+        {
+            FilmsVM vm = _filmService.GetFilmVMs();
+            return View(vm);
+        }
+        
         
         public string List(int? pageIndex = 0, int? pageSize = 0, string? species = "", string? planet = "") {    
             List<ChallengeOutput> challengeOutputs = new List<ChallengeOutput>();

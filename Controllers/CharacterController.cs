@@ -7,6 +7,7 @@ using star_wars_api.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using star_wars_api.Models.EntityModels;
 
 namespace star_wars_api.Controllers {
     public class CharacterController : APIController<Character, CharacterJSONConverter> {

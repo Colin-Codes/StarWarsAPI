@@ -7506,11 +7506,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\colin\\source\\mkf\\star-wars-api\\star-wars-api.csproj",
+      "projectUniqueName": "C:\\Users\\colin\\source\\StarWarsAPI\\star-wars-api.csproj",
       "projectName": "star-wars-api",
-      "projectPath": "C:\\Users\\colin\\source\\mkf\\star-wars-api\\star-wars-api.csproj",
+      "projectPath": "C:\\Users\\colin\\source\\StarWarsAPI\\star-wars-api.csproj",
       "packagesPath": "C:\\Users\\colin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\colin\\source\\mkf\\star-wars-api\\obj\\",
+      "outputPath": "C:\\Users\\colin\\source\\StarWarsAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -7587,7 +7587,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

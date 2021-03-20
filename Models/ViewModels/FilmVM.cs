@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace star_wars_api.Models {
-    public class FilmDM : StarWarsModel {
+    public class FilmVM : StarWarsModel {
         public string director { get; set; }
         public int episodeId { get; set; }
         public string openingCrawl { get; set; }
@@ -16,6 +16,5 @@ namespace star_wars_api.Models {
         public List<FilmPlanet> planetIds { get; set; }
         public List<FilmVehicle> vehicleIds { get; set; }
         public List<FilmStarship> starshipIds { get; set; }
-        
     }
 }

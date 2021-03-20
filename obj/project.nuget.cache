@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lsq3azhIk1Y+axwPt4S3ZmmGtED/Sl6J/NeOwUeOqQXBdML/s9VkRMYucHjUHMlbDWShrHXQuPtC7nWAaqIvpA==",
+  "dgSpecHash": "hrtZC4qGZ4JdfhwdlZxZ3QIygSxGmzGKd3gXfMRkPblO9r+iuPvi7m4m7Sf0dkhHq7cy+VIY3Gu2CnQoxLlayg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\colin\\source\\mkf\\star-wars-api\\star-wars-api.csproj",
+  "projectFilePath": "C:\\Users\\colin\\source\\StarWarsAPI\\star-wars-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\colin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\colin\\.nuget\\packages\\microsoft.aspnetcore.diagnostics.entityframeworkcore\\5.0.1\\microsoft.aspnetcore.diagnostics.entityframeworkcore.5.0.1.nupkg.sha512",

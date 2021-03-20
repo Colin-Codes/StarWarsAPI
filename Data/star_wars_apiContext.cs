@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using star_wars_api.Models;
+using star_wars_api.Models.EntityModels;
 
 namespace star_wars_api.Data
 {

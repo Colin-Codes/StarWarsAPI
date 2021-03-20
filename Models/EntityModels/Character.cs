@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace star_wars_api.Models
+namespace star_wars_api.Models.EntityModels
 {
     public class Character : StarWarsModel {
         public string name { get; set; }

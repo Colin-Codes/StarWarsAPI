@@ -20,14 +20,14 @@ namespace star_wars_api.Controllers {
             return (T) Activator.CreateInstance(typeof (T), lstArgument);  
         } 
         
-        public string Index() {    
+        /* public string Index() {    
             List<JsonConverter> JSONoutputs = new List<JsonConverter>();
             List<Model> models = dbSet.Where(b => b.id != null).ToList();
             foreach (Model model in models) {
                 JSONoutputs.Add(GetJSON<JsonConverter>(model, context));
             }
             return JsonSerializer.Serialize<List<JsonConverter>>(JSONoutputs);
-        }
+        } */
         
         [HttpPost]
         public string Create() {    
