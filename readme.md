@@ -18,6 +18,13 @@ https://docs.microsoft.com/en-us/dotnet/api/system.net.http.json.httpcontentjson
 https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/?view=aspnetcore-5.0
 
 The first step was to build out the api in such a way that I could import the data easily with post requests, without having to significantly amend the original data. While it was easy to build out CRUD methods in the abstract APIController class, the format would need to be adapted when submittng and requesting data to and from the API. I achieved this using IStarWarsJSONConverter<Model> objects (FilmJSONConverter, CharacterJSONConverter etc.). Conversion to a model format is via the ToModel() method, and back into JSON via the constructor, by passing in a model.
+    
+## Integrating React
+I am currently working to integrate React with the app. I have been using these tutorials:
+
+https://code.visualstudio.com/docs/nodejs/reactjs-tutorial
+
+https://www.srinadimpalli.com/2019/12/single-project-that-contain-react-plus-asp-net-core-mvc-application/
 
 ## Assumptions
 My comments below look beyond the scope of a code assignment and address how I would face the problem in a production environment
