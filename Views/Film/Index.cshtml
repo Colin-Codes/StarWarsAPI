@@ -1,0 +1,29 @@
+﻿@using star_wars_api.Models
+@model star_wars_api.Models.FilmsVM
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Star Wars Movies</title>
+</head>
+<body>
+<div>
+    
+    @{
+        foreach (FilmVM film in Model.films)
+        {
+            <div>
+                <h1>@film.title</h1>
+                <h6>Directed by: @film.director</h6>
+                <h6>Produced by: @film.producer</h6>
+                <h6>Released: @film.releaseDate</h6>
+                <p>@film.openingCrawl</p>
+            </div>
+        }
+    }
+
+</div>
+</body>
+</html>
